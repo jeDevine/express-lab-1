@@ -34,7 +34,7 @@ cart.get('/', (req, res) => {
 
 
 cart.get("/:id", (req, res) => {
-    let index = parseInt(req.query.id as string)
+    let index = parseInt(req.params.id as string)
     for (let i = 0; i < items.length; i++) {
         if(items[i].id === index) {
             res.json(items[i]);
@@ -54,7 +54,7 @@ cart.post("/", (req, res) => {
 
 cart.put("/:id", (req, res) => {
     for(let i = 0; i < items.length; i++) {
-        let edit = parseInt(req.query.id as string)
+        let edit = parseInt(req.params.id as string)
         if(items[i].id === edit) {
             items[i] = req.body;
             res.json(items[i])
