@@ -30,12 +30,48 @@ cart.get('/', (req, res) => {
     } else {
         res.json(items);
     }
+})
 
 
+cart.get("/:id", (req, res) => {
+    let index = parseInt(req.query.id as string)
+    for (let i = 0; i < items.length; i++) {
+        if(items[i].id === index) {
+            res.json(items[i]);
+        }
+    }
+})
 
+let nextID = 5;
+cart.post("/", (req, res) => {
+    let newItem:shoppingCart = req.body; //setting newShop properties to request properties
+    newItem.id = nextID;
+    nextID += 1;
+    items.push(newItem);
+    res.status(201)
+    res.json(newItem);
+})
 
-    // res.json(items);
-    // res.status(200);
+cart.put("/:id", (req, res) => {
+    for(let i = 0; i < items.length; i++) {
+        let edit = parseInt(req.query.id as string)
+        if(items[i].id === edit) {
+            items[i] = req.body;
+            res.json(items[i])
+            break;
+        }
+    }
+})
+
+cart.delete("/:id", (req, res) => {
+    let tobeDeleted:number = Number.parseInt(req.params.id);
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].id === tobeDeleted) {
+            items.splice(i, 1);
+        }
+    }
+    res.status(204);
+    res.json("delete was successful");
 })
 
 export default cart;
