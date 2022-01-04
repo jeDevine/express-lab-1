@@ -1,7 +1,10 @@
 import express from 'express';
+import cors from 'cors';
 import cart from './routes/cart-route';
 
 const app = express();
+
+app.use(cors());
 
 const port = 3000; //default is 3000
 

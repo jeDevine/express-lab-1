@@ -10,13 +10,54 @@ let items: shoppingCart[] = [
 ];
 
 cart.get('/', (req, res) => {
-    if (req.query.maxPrice) {
+    if (req.query.maxPrice&&req.query.prefix&&req.query.pageSize){
+        let newPrice = parseInt(req.query.maxPrice as string);
+        let search = req.query.prefix as string;
+        let page = parseInt(req.query.pageSize as string);
+        const maxPriceFilter = items.filter(pricey => pricey.price <= newPrice)
+        let result = [];
+        for (let i = 0; i < maxPriceFilter.length; i++) {
+            if (maxPriceFilter[i].product.startsWith(search)) {
+                result.push(maxPriceFilter[i]);
+            }
+        }
+        const onlys = result.slice(0, page)
+        res.json(onlys);
+    } else if (req.query.maxPrice&&req.query.prefix) {
+        let newPrice = parseInt(req.query.maxPrice as string);
+        let search = req.query.prefix as string;
+        const maxPriceFilter = items.filter(pricey => pricey.price <= newPrice)
+        let result = [];
+        for (let i = 0; i < maxPriceFilter.length; i++) {
+            if (maxPriceFilter[i].product.startsWith(search)) {
+                result.push(maxPriceFilter[i]);
+            }
+        }
+        res.json(result);
+    } else if (req.query.maxPrice&&req.query.pageSize) {
+        let newPrice = parseInt(req.query.maxPrice as string);
+        let page = parseInt(req.query.pageSize as string);
+        const maxPriceFilter = items.filter(pricey => pricey.price <= newPrice)
+        const onlys = maxPriceFilter.slice(0, page)
+        res.json(onlys);
+    } else if (req.query.prefix&&req.query.pageSize) {
+        let search = req.query.prefix as string;
+        let page = parseInt(req.query.pageSize as string);
+        let result = [];
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].product.startsWith(search)) {
+                result.push(items[i]);
+            }
+        }
+        const onlys = result.slice(0, page)
+        res.json(onlys);
+    } else if (req.query.maxPrice) {
         let newPrice = parseInt(req.query.maxPrice as string);
         const maxPriceFilter = items.filter(pricey => pricey.price <= newPrice)
         res.json(maxPriceFilter);
     } else if (req.query.prefix) {
-        let result = [];
         let search = req.query.prefix as string;
+        let result = [];
         for (let i = 0; i < items.length; i++) {
             if (items[i].product.startsWith(search)) {
                 result.push(items[i]);
@@ -57,6 +98,7 @@ cart.put("/:id", (req, res) => {
         let edit = parseInt(req.params.id as string)
         if(items[i].id === edit) {
             items[i] = req.body;
+            items[i].id = edit
             res.json(items[i])
             break;
         }
