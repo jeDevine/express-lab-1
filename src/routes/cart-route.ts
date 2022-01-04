@@ -97,7 +97,9 @@ cart.put("/:id", (req, res) => {
     for(let i = 0; i < items.length; i++) {
         let edit = parseInt(req.params.id as string)
         if(items[i].id === edit) {
-            items[i] = req.body;
+            items[i].product = req.body.product;
+            items[i].price = req.body.price;
+            items[i].quantity = req.body.quantity;
             items[i].id = edit
             res.json(items[i])
             break;
